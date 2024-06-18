@@ -11,6 +11,7 @@ void dealerPotez() {
 
 		inventory('d');
 	}
+	if (trenutniMetak + 1 == brojMetaka)dealerKnowsRound = 1;
 	//dealerUseItem();
 	system("cls");
 	showItems('p');
@@ -65,7 +66,7 @@ a:
 		if (cuffs == 1 && playerHealth > 0 && dealerHealth > 0)
 		{
 			system("cls");
-			puts("Dealer igra jos jednom...\n");
+			puts("Dealer je idalje na potezu...\n");
 			_getch();
 			//goto a;
 			dealerPotez();

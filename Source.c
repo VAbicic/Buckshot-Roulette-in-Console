@@ -81,7 +81,7 @@ a:	printf("\n");
 	printf("\t\t\t\t  3) Izlaz iz igre \n");
 	printf("\t\t\t\t   4) Refresh RNG (debug) \n");
 	printf("\t\t\t\t    5) Prikazi metke (debug)\n");
-	printf("\t\t\t\t     6) Vidi dealerove iteme\n");
+	//printf("\t\t\t\t     6) Vidi dealerove iteme\n");
 	//printf("\t\t\tOpcija 5: izlaz iz programa!\n");
 	printf("\t       ==================\
 =================================");
@@ -130,7 +130,7 @@ a:	printf("\n");
 			break;
 	case 6:
 		system("cls");
-		showItems('d');
+		//showItems('d');
 		break;
 	default:
 		system("cls");
