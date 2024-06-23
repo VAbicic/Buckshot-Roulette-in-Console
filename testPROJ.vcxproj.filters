@@ -27,6 +27,9 @@
     <ClCompile Include="items.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="leaderboard.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h">

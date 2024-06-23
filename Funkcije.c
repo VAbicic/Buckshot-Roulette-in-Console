@@ -15,7 +15,7 @@ void generateBullets() {
 	//odabir broja metaka u puski
 	brojMetaka = RNG(2, 8);
 	//postavljanje svakog metka
-	while ((((float)live/(float)brojMetaka)<0.3f)||blank<1||((live==2)&&brojMetaka==3)) { //barem 30% metaka mora biti live i mora biti barem jedan blank
+	while ((((float)live/(float)brojMetaka)<0.3f)||(((float)live / (float)brojMetaka) > 0.7f)||blank<1||((live==2)&&brojMetaka==3)) { //mora biti 30% do 70% live rounds
 		live = 0;
 		blank = 0;
 		for (int i = 0; i < brojMetaka; i++)
@@ -34,7 +34,7 @@ void generateBullets() {
 	for (int i = 0; i < brojMetaka; i++)
 	{
 		printf("X ");
-		delay(0.21);
+		delay(0.205);
 	}
 	printf("\n\n");
 	//shuffle bullets
@@ -101,7 +101,6 @@ void prikaziMetke() {
 	}
 	printf("\n");
 }
-
 
 void shuffle(int* array, size_t n)
 {
