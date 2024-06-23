@@ -21,6 +21,7 @@ b:	if (user == 'd') {
 					dealerItemi[j] = dealerItemi[j + 1];
 				}
 				dItemCount--;
+				i--;
 				dealerUsedItem = 0;
 			}
 		}
@@ -110,7 +111,7 @@ else if (user == 'p')
 	{
 	case 1:
 		system("cls");
-		printf("Iskoristeno.\n");
+		//printf("Iskoristeno.\n");
 		pItemCount--;
 		for (int i = indeks; i < pItemCount; i++)
 		{
@@ -344,6 +345,7 @@ void povecalo(char user) {
 	{
 		if (metci[trenutniMetak] == 0)printf("Trenutna cahura je prazna.\n");
 		else printf("Trenutna cahura je napunjena.");
+		printf("\n");
 	}
 }
 void pivo() {

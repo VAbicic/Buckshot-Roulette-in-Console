@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include<stdlib.h>
 #include<time.h>
@@ -18,45 +18,96 @@ int doubleDamage;
 int pItemCount;
 int dItemCount;
 int cuffs;
+int score;
+int scorePenalty;
+int doubleOrNothing=0;
+static PLAYER* leaderboard = NULL;
+static PLAYER* pronadeniSave = NULL;
+//int brojSaveova=0;
+//PLAYER* leaderboard = NULL;
 //logika igre
 int main(void)
 {
 	srand(time(NULL));
-	printf("Jedna demo runda zapoceta...\n");
+	score = 70000;
+	kreirajDatoteku();
 	int gameOver = 0;
 	//glavni game loop
 	while (gameOver!=1)
 	{
-		newGame();
-		int uvijet = 1;
-
+		scorePenalty = 330;
+		int runda = 1;
 		do {
-			uvijet = izbornik();
-			//ponavlja se igracev potez dok nije postignut uvijet za dealerov potez
-			if (uvijet == -1&&dealerHealth>0&&!cuffs>0)
-			{
-				_getch();
-				dealerPotez();
+			printf("Runda %d/3\n", runda);
+			newGame();
+			int uvijet = 1;
+			//priprema prije runde 
+			do {
+				uvijet = izbornik();
+				//ponavlja se igracev potez dok nije postignut uvijet za dealerov potez
+				if (uvijet == -1 && dealerHealth > 0 && !cuffs > 0&&playerHealth>0&&trenutniMetak!=0)
+				{
+					_getch();
+					dealerPotez();
+				}
+			} while (uvijet && dealerHealth > 0 && playerHealth > 0);
+			_getch();
+			system("cls");
+			//kraj runde
+			if (uvijet == 0) {
+				runda = 4;
 			}
-		} while (uvijet && dealerHealth > 0 && playerHealth > 0);
-		_getch();
-		system("cls");
-		//kraj runde
-		if (dealerHealth == 0) {
+			else {
+				if (playerHealth > 0)printf("Kraj runde...\n");
+				runda++;
+			}
+		} while (runda < 4&&playerHealth>0);
+		//nakon 3 runde, kraj igre
+		if (dealerHealth < 1) {
 			printf("IGRAC POBJEDUJE!\n");
+			printf("Zaraden novac: %d$ \n", score);
+			printf("Dvostruko ili nista? (da/ne)\n");
+			char potvrda[3] = { '\0' };
+			scanf("%2s", potvrda);
+			//double or nothing
+			if (strcmp("da", potvrda)) {
+				gameOver = 1;
+				getchar();
+				saveResults();
+				//unos imena za leaderboard
+				if (leaderboard != NULL) {
+					free(leaderboard);
+					leaderboard = NULL;
+				}
+				leaderboard = (PLAYER*)readResults();
+				if (leaderboard == NULL) {
+					exit(EXIT_FAILURE);
+				}
+				//ucitan leaderboard
+				printf("Leaderboard:\n");
+				ispisiLeaderboard(leaderboard);
+				oslobadanjeMem(leaderboard);
+			}
+			//end
+			else { 
+				system("cls"); score *= 2; doubleOrNothing = 1;
+			}
 		}
-		else if (playerHealth == 0)
+		else if (playerHealth < 1)
 		{
 			printf("Dealer pobjeduje...\n");
+			printf("Igra je zavrsena.\n");
+			printf("Pokusati ponovno? (da/ne)\n");
+			char potvrda[3] = { '\0' };
+			scanf("%2s", potvrda);
+			if (strcmp("da", potvrda)) {
+				gameOver = 1;
+			}
+			else { system("cls"); score = 70000; doubleOrNothing = 0; }
 		}
-		printf("Igra je zavrsena.\n");
-		printf("Jos jednu rundu? (da/ne)\n");
-		char potvrda[3] = { '\0' };
-		scanf("%2s", potvrda);
-		if (strcmp("da", potvrda)) {
+		else {
 			gameOver = 1;
 		}
-		else { system("cls"); }
 	}
 	
 	//Animation();
@@ -79,12 +130,11 @@ a:	printf("\n");
 	printf("\t\t\t\t1) Pucaj \n");
 	printf("\t\t\t\t 2) Itemi \n");
 	printf("\t\t\t\t  3) Izlaz iz igre \n");
-	printf("\t\t\t\t   4) Refresh RNG (debug) \n");
+	printf("\t\t\t\t   4) Leaderboard\n");
 	printf("\t\t\t\t    5) Prikazi metke (debug)\n");
-	printf("\t\t\t\t     6) Vidi dealerove iteme\n");
-	//printf("\t\t\tOpcija 5: izlaz iz programa!\n");
-	printf("\t       ==================\
-=================================");
+	printf("\t\t\t\t     6) Refresh RNG (debug)\n");
+	printf("\t       ===================\
+ Reward: %d$ ===================",score);
 	printf(" Dealer HP: %d\n", dealerHealth);
 	int uvijet = 0;
 	//scanf("%d", &uvijet);
@@ -120,9 +170,10 @@ a:	printf("\n");
 		}
 		system("cls");
 		break;
-	case 4: system("cls");
-		printf("Resetiranje...\n");
-		newGame();
+	case 4: 
+		printf("Leaderboard...\n");
+		system("cls");
+		leaderboardIzbornik(leaderboard);
 			break;
 	case 5: printf("Prikaz metaka...\n ");
 		system("cls");
@@ -130,7 +181,8 @@ a:	printf("\n");
 			break;
 	case 6:
 		system("cls");
-		showItems('d');
+		printf("Resetiranje...\n");
+		newGame();
 		break;
 	default:
 		system("cls");
@@ -177,8 +229,8 @@ a:	printf("====================");
 			uvijet = -1;
 		}
 		pucaj(0);
-		if (cuffs > 0) { cuffs--; if (cuffs == 1) { printf("Dealeru su ruke svezane pa igras jos jednom.\n"); }
-		else if (cuffs == 0)printf("Lisice su skinute.\n");
+		if (cuffs > 0 && metci[trenutniMetak - 1] == 1) { cuffs--; if (cuffs == 1) { printf("Dealeru su ruke svezane pa igras jos jednom.\n"); }
+		else if (cuffs == 0 && metci[trenutniMetak - 1] == 1)printf("Lisice su skinute.\n");
 		}
 		return uvijet;
 		break;
@@ -209,7 +261,12 @@ void pucaj(int target) {
 		if (target == 1) dealerHealth-=damage;
 		else
 		{
-			playerHealth-=damage;
+			playerHealth -= damage;
+			if (doubleOrNothing == 0) {
+				score -= scorePenalty * damage;
+				scorePenalty += 495;
+				if (score < 0)score = 0;
+			}
 		}
 	}
 	else
@@ -217,7 +274,7 @@ void pucaj(int target) {
 		printf("*Click* (prazno)\n");
 	}
 	iduciMetak();
-	if (trenutniMetak == brojMetaka && dealerHealth != 0)
+	if (trenutniMetak == brojMetaka && dealerHealth > 0&&playerHealth>0)
 	{
 		printf("Zadnji metak izbacen.\n");
 		generateBullets();
@@ -241,7 +298,7 @@ void newGame() {
 	playerHealth = maxHealth;
 	generateBullets();
 }
-void iduciMetak()
+/*void iduciMetak()
 {
 	trenutniMetak++;
-}
+}*/
