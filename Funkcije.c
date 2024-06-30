@@ -55,9 +55,10 @@ void generateItems() {
 	//dodavanje novih itema dealeru i igracu
 	int amount = RNG(2, 4);
 	int amount2 = amount;
-	printf("%d itema dodano...\n",amount);
+	int previous = -1;
+	printf("%d itema dodano...\n", amount);
 	int i = 0;
-	while (pItemCount+amount > 8) {
+	while (pItemCount + amount > 8) {
 		if (amount == 0)break;
 		amount--;
 	}
@@ -70,8 +71,19 @@ void generateItems() {
 	for (i; i < pItemCount; i++)
 	{
 		playerItemi[i] = RNG(1, 5);
+		if (playerItemi[i] == previous) {
+			do {
+				playerItemi[i] = RNG(1, 5);
+			} while (playerItemi[i] == previous);
+			previous = playerItemi[i];
+		}
+		else {
+			previous = playerItemi[i];
+		}
+		//nije moguce stvoriti isti item dvaput zaredom
 	}
 	i = 0;
+	previous = -1;
 	while (dItemCount + amount2 > 8) {
 		if (amount2 == 0)break;
 		amount2--;
@@ -86,6 +98,16 @@ void generateItems() {
 	for (i; i < dItemCount; i++)
 	{
 		dealerItemi[i] = RNG(1, 5);
+		if (dealerItemi[i] == previous) {
+			do {
+				dealerItemi[i] = RNG(1, 5);
+			} while (dealerItemi[i] == previous);
+			previous = dealerItemi[i];
+		}
+		else {
+			previous = dealerItemi[i];
+		}
+		//nije moguce stvoriti isti item dvaput zaredom
 	}
 	i = 0;
 }
@@ -147,7 +169,8 @@ void Animation() {
 			fclose(fr);
 
 			delay(0.5); //time per frame
-			system("cls");
+			//system("cls");
 		}
+		break;
 	}
 }

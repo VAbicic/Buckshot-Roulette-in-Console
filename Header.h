@@ -62,3 +62,7 @@ void* pronadiSave(PLAYER* const);
 int oslobadanjeMem(PLAYER*);
 void brisanjePlayera(PLAYER** const trazeniPLAYER, const PLAYER* const leaderboard);
 void leaderboardIzbornik(const PLAYER* leaderboard);
+//quicksort
+void swap(int* p1, int* p2);
+int partition(int arr[], int low, int high);
+void quickSort(int arr[], int low, int high);

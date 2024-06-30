@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include"Header.h"
-
+#include<Windows.h>
 //varijable
 int metci[8];
 int brojMetaka;
@@ -35,7 +35,7 @@ int main(void)
 	//glavni game loop
 	while (gameOver!=1)
 	{
-		scorePenalty = 330;
+		scorePenalty = 660;
 		int runda = 1;
 		do {
 			printf("Runda %d/3\n", runda);
@@ -73,6 +73,7 @@ int main(void)
 			if (strcmp("da", potvrda)) {
 				gameOver = 1;
 				getchar();
+				system("cls");
 				saveResults();
 				//unos imena za leaderboard
 				if (leaderboard != NULL) {
@@ -292,8 +293,8 @@ void newGame() {
 	}
 	pItemCount = 0;
 	dItemCount = 0;
-
-	maxHealth = RNG(2, 6);
+	if (RNG(1, 10) < 3)maxHealth = 6;//samo u 20% slucajeva ce biti 6 healtha
+	else maxHealth = RNG(2, 4);
 	dealerHealth = maxHealth;
 	playerHealth = maxHealth;
 	generateBullets();
