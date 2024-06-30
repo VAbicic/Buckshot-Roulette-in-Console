@@ -69,7 +69,13 @@ else if (user == 'p')
 		{
 			printf("\t<--\t  Pila  \t-->\n");
 			printf("\n Otpiljeni vrh daje dvostruku stetu za iduci metak.\n");
-			itemCode = 4;
+			if (doubleDamage == 0) {
+				itemCode = 4;
+			}
+			else {
+				printf("\n(Sacmarici je vec otpiljen vrh.)\n");
+				unavailable = 1;
+			}
 		}
 		else if (playerItemi[indeks] == 5)
 		{
@@ -112,11 +118,11 @@ else if (user == 'p')
 	case 1:
 		system("cls");
 		//printf("Iskoristeno.\n");
-		pItemCount--;
 		for (int i = indeks; i < pItemCount; i++)
 		{
 			playerItemi[i] = playerItemi[i + 1];
 		}
+		pItemCount--;
 		return itemCode;
 		break;
 	case 2:
