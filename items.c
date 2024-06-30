@@ -224,6 +224,8 @@ int functionSelect(int itemCode, char user) {
 		if (user == 'p')
 		{
 			printf("Pivo iskoristeno.\n");
+			pivo();
+			_getch();
 		}
 		else if (user == 'd' && dealerKnowsRound != 1) {
 			system("cls");
@@ -232,10 +234,10 @@ int functionSelect(int itemCode, char user) {
 			printf("\n \n");
 			printf("Dealer uzima pivo i eksira ga.\n");
 			dealerUsedItem = 1;
+			pivo();
+			_getch();
 			//_getch();
 		}
-		pivo();
-		_getch();
 		return dealerUsedItem;
 	}
 	else if (itemCode == 3)

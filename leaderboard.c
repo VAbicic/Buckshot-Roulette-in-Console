@@ -111,7 +111,7 @@ void* readResults() {
 		//exit(EXIT_FAILURE);
 	}
 	fread(&brojSaveova, sizeof(int), 1, pF);
-	printf("Broj saveova: %d\n", brojSaveova);
+	//printf("Broj saveova: %d\n", brojSaveova);
 	PLAYER* leaderboard = (PLAYER*)calloc(brojSaveova, sizeof(PLAYER));
 	if (leaderboard == NULL) {
 		perror("Neuspjelo zauzimanje memorije za leaderboard");
@@ -127,8 +127,48 @@ void ispisiLeaderboard(const PLAYER* leaderboard) {
 		printf("Leaderboard je prazan\n");
 		return;
 	}
-	int i;
-	for (i = 0; i < brojSaveova; i++)
+	//sortiranje prije ispisa
+	int* sortBuffer;
+	sortBuffer = (int*)malloc(brojSaveova * sizeof(int));
+	if (sortBuffer != NULL) {
+		for (int i = 0; i < brojSaveova; i++)
+		{
+			sortBuffer[i] = (leaderboard + i)->score;
+		}
+	}
+	int n = brojSaveova;
+	quickSort(sortBuffer, 0, n - 1);
+	//ispis
+	int noRepeat[200] = { 0 };
+	for (int i = 0; i < brojSaveova; i++) {
+		//i-petlja ide kroz svaki sortirani score
+		for (int j = 0; j < brojSaveova; j++)
+		{
+			//j-petlja usporeduje pojedini score sa svim unosima na leaderboardu dok ne nade prvi koji ima isti score
+			if ((leaderboard+j)->score==sortBuffer[i]) {
+				int repeat = 0;
+				//provjera da se ne ponavlja ispis igraca koji ima identican score kao neki drugi igrac
+				if (i > 0) {
+						if (noRepeat[j]==1) {
+							repeat = 1;
+						}
+				}
+				if (repeat == 0) {
+					//ako ovo nije ponovljen igrac, ispis
+					if ((leaderboard + j)->specialMode == 1) {
+						printf("%d\t Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: yes\n",i+1, (leaderboard + j)->id, (leaderboard + j)->ime, (leaderboard + j)->score);
+					}
+					else {
+						printf("%d\t Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: no\n",i+1, (leaderboard + j)->id, (leaderboard + j)->ime, (leaderboard + j)->score);
+					}
+					noRepeat[j] = 1;//trenutni igrac je oznacen da se ne ponavlja dalje u ispisu
+					break;
+				}
+			}
+		}
+	}
+	//stari ispis
+	/*for (int i = 0; i < brojSaveova; i++)
 	{
 		if ((leaderboard + i)->specialMode == 1) {
 			printf("Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: yes\n", (leaderboard + i)->id, (leaderboard + i)->ime, (leaderboard + i)->score);
@@ -136,7 +176,8 @@ void ispisiLeaderboard(const PLAYER* leaderboard) {
 		else {
 			printf("Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: no\n", (leaderboard + i)->id, (leaderboard + i)->ime, (leaderboard + i)->score);
 		}
-	}
+	}*/
+	free(sortBuffer);
 }
 void* pronadiSave(PLAYER* const leaderboard) {
 	if (leaderboard == NULL) {
@@ -194,4 +235,51 @@ void brisanjePlayera(PLAYER** const trazeniPLAYER, const PLAYER* const leaderboa
 int oslobadanjeMem(PLAYER* leaderboard) {
 	free(leaderboard);
 	return 0;
+}
+//sortiranje
+void swap(int* p1, int* p2)
+{
+	int temp;
+	temp = *p1;
+	*p1 = *p2;
+	*p2 = temp;
+}
+
+int partition(int arr[], int low, int high)
+{
+	// choose the pivot
+	int pivot = arr[high];
+
+	// Index of smaller element and Indicate
+	// the right position of pivot found so far
+	int i = (low - 1);
+
+	for (int j = low; j <= high - 1; j++) {
+		// If current element is smaller than the pivot
+		if (arr[j] >= pivot) {
+			// Increment index of smaller element
+			i++;
+			swap(&arr[i], &arr[j]);
+		}
+	}
+	swap(&arr[i + 1], &arr[high]);
+	return (i + 1);
+}
+
+// The Quicksort function Implement
+
+void quickSort(int arr[], int low, int high)
+{
+	// when low is less than high
+	if (low < high) {
+		// pi is the partition return index of pivot
+
+		int pi = partition(arr, low, high);
+
+		// Recursion Call
+		// smaller element than pivot goes left and
+		// higher element goes right
+		quickSort(arr, low, pi - 1);
+		quickSort(arr, pi + 1, high);
+	}
 }
