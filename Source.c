@@ -160,10 +160,10 @@ a:	printf("\n");
 	printf("\t\t\t\t 2) Itemi \n");
 	printf("\t\t\t\t  3) Izlaz iz igre \n");
 	printf("\t\t\t\t   4) Leaderboard\n");
-	printf("\t\t\t\t    5) Prikazi metke (debug)\n");
-	printf("\t\t\t\t     6) Refresh RNG (debug)\n");
-	printf("\t       ===================\
- Reward: %d$ ===================",score);
+	//printf("\t\t\t\t    5) Prikazi metke (debug)\n");
+	//printf("\t\t\t\t     6) Refresh RNG (debug)\n");
+	printf("\t       ==================\
+ Reward: %d$ ==================",score);
 	printf(" Dealer HP: %d\n", dealerHealth);
 	int uvijet = 0;
 	//scanf("%d", &uvijet);
@@ -204,7 +204,7 @@ a:	printf("\n");
 		system("cls");
 		leaderboardIzbornik(leaderboard);
 			break;
-	case 5: printf("Prikaz metaka...\n ");
+	/*case 5: printf("Prikaz metaka...\n ");
 		system("cls");
 		prikaziMetke();
 			break;
@@ -212,7 +212,7 @@ a:	printf("\n");
 		system("cls");
 		printf("Resetiranje...\n");
 		newGame();
-		break;
+		break;*/
 	default:
 		system("cls");
 		goto a;

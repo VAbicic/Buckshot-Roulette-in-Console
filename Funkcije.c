@@ -36,18 +36,18 @@ void generateBullets() {
 		printf("X ");
 		delay(0.205);
 	}
-	printf("\n\n");
+	printf("\n");
 	//shuffle bullets
 	shuffle(metci, brojMetaka);
 	shuffle(metci, brojMetaka);
 	shuffle(metci, brojMetaka);
 	//provjera ispis
-	printf("Ima %d metaka: ", brojMetaka);
+	/*printf("Ima %d metaka: ", brojMetaka);
 	for (int i = 0; i < brojMetaka; i++)
 	{
 		printf("%d ", metci[i]);
 	}
-	printf("\n");
+	printf("\n");*/
 	_getch();
 	system("cls");
 }
