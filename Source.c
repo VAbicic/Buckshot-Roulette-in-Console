@@ -23,8 +23,6 @@ int scorePenalty;
 int doubleOrNothing=0;
 static PLAYER* leaderboard = NULL;
 static PLAYER* pronadeniSave = NULL;
-//int brojSaveova=0;
-//PLAYER* leaderboard = NULL;
 //logika igre
 int main(void)
 {
@@ -37,7 +35,15 @@ int main(void)
 	{
 		scorePenalty = 660;
 		int runda = 1;
+		if (doubleOrNothing == 1) { 
+			printf("Dealer ti se podlo smjesi.\n");
+			printf("Osjecas da ako sada umres igra zavrsava...\n");
+			_getch();
+			system("cls");
+		}
 		do {
+		respawn:		
+			//system("cls");
 			printf("Runda %d/3\n", runda);
 			newGame();
 			int uvijet = 1;
@@ -68,14 +74,13 @@ int main(void)
 			printf("Zaraden novac: %d$ \n", score);
 			printf("Dvostruko ili nista? (da/ne)\n");
 			char potvrda[3] = { '\0' };
-			scanf("%2s", potvrda);
+			scanf("%2s", &potvrda);
 			//double or nothing
 			if (strcmp("da", potvrda)) {
+				while (getchar() != '\n');
 				gameOver = 1;
-				getchar();
 				system("cls");
-				saveResults();
-				//unos imena za leaderboard
+				//ucitavanje
 				if (leaderboard != NULL) {
 					free(leaderboard);
 					leaderboard = NULL;
@@ -84,10 +89,23 @@ int main(void)
 				if (leaderboard == NULL) {
 					exit(EXIT_FAILURE);
 				}
-				//ucitan leaderboard
+				//unos imena za leaderboard
+				saveResults(leaderboard);
+				//////////////////////////
+				if (leaderboard != NULL) {
+					free(leaderboard);
+					leaderboard = NULL;
+				}
+				leaderboard = (PLAYER*)readResults();
+				if (leaderboard == NULL) {
+					exit(EXIT_FAILURE);
+				}
+				//ucitavanje pred ispis
 				printf("Leaderboard:\n");
 				ispisiLeaderboard(leaderboard);
 				oslobadanjeMem(leaderboard);
+				printf("(Igra je gotova sada)");
+				_getch();
 			}
 			//end
 			else { 
@@ -96,21 +114,31 @@ int main(void)
 		}
 		else if (playerHealth < 1)
 		{
-			printf("Dealer pobjeduje...\n");
-			printf("Igra je zavrsena.\n");
-			printf("Pokusati ponovno? (da/ne)\n");
-			char potvrda[3] = { '\0' };
-			scanf("%2s", potvrda);
-			if (strcmp("da", potvrda)) {
-				gameOver = 1;
+			if (doubleOrNothing != 1) {
+				printf("Nemas vise ni truncice healtha i dealer pobjeduje.\n");
+				_getch();
+				printf("Ali... Jos imas snage za nastaviti.\n");
+				//_getch();
+				score -= 6666;
+				runda--;
+				goto respawn;
 			}
-			else { system("cls"); score = 70000; doubleOrNothing = 0; }
+			else {
+				printf("Dealer pobjeduje...\n");
+				printf("Igra je zavrsena.\n");
+				printf("Pokusati ispocetka? (da/ne)\n");
+				char potvrda[3] = { '\0' };
+				scanf("%2s", potvrda);
+				if (strcmp("da", potvrda)) {
+					gameOver = 1;
+				}
+				else { system("cls"); score = 70000; doubleOrNothing = 0; }
+			}
 		}
 		else {
 			gameOver = 1;
 		}
 	}
-	
 	//Animation();
 }
 

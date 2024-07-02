@@ -9,7 +9,7 @@ void kreirajDatoteku() {
 	fwrite(&brojSaveova, sizeof(int), 1, pF);
 	fclose(pF);
 }
-void saveResults() {
+void saveResults(const PLAYER* leaderboard) {
 	FILE* pF = fopen("rezultati", "rb+");
 	if (pF == NULL) {
 		perror("Neuspjelo pristupanje datoteci");
@@ -18,7 +18,11 @@ void saveResults() {
 	fread(&brojSaveova, sizeof(int), 1, pF);
 	//printf("broj saveova: %d\n", brojSaveova);
 	PLAYER temp = { 0 };
-	temp.id = brojSaveova;
+	int maksId=0;
+	for (int i = 0; i < brojSaveova; i++) {
+		if ((leaderboard + i)->id > maksId)maksId = (leaderboard + i)->id;
+	}
+	temp.id = maksId+1;
 	printf("Unesite ime igraca:\n");
 	scanf("%29[^\n]", temp.ime);
 	temp.score = score;
@@ -139,7 +143,8 @@ void ispisiLeaderboard(const PLAYER* leaderboard) {
 	int n = brojSaveova;
 	quickSort(sortBuffer, 0, n - 1);
 	//ispis
-	int noRepeat[200] = { 0 };
+	int* noRepeat;
+	noRepeat = (int*)malloc(brojSaveova * sizeof(int));
 	for (int i = 0; i < brojSaveova; i++) {
 		//i-petlja ide kroz svaki sortirani score
 		for (int j = 0; j < brojSaveova; j++)
@@ -156,10 +161,10 @@ void ispisiLeaderboard(const PLAYER* leaderboard) {
 				if (repeat == 0) {
 					//ako ovo nije ponovljen igrac, ispis
 					if ((leaderboard + j)->specialMode == 1) {
-						printf("%d\t Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: yes\n",i+1, (leaderboard + j)->id, (leaderboard + j)->ime, (leaderboard + j)->score);
+						printf("%d\t Player ID: %d\tIme: %s\tScore: %d$\tDouble or nothing: yes\n",i+1, (leaderboard + j)->id, (leaderboard + j)->ime, (leaderboard + j)->score);
 					}
 					else {
-						printf("%d\t Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: no\n",i+1, (leaderboard + j)->id, (leaderboard + j)->ime, (leaderboard + j)->score);
+						printf("%d\t Player ID: %d\tIme: %s\tScore: %d$\tDouble or nothing: no\n",i+1, (leaderboard + j)->id, (leaderboard + j)->ime, (leaderboard + j)->score);
 					}
 					noRepeat[j] = 1;//trenutni igrac je oznacen da se ne ponavlja dalje u ispisu
 					break;
@@ -167,17 +172,8 @@ void ispisiLeaderboard(const PLAYER* leaderboard) {
 			}
 		}
 	}
-	//stari ispis
-	/*for (int i = 0; i < brojSaveova; i++)
-	{
-		if ((leaderboard + i)->specialMode == 1) {
-			printf("Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: yes\n", (leaderboard + i)->id, (leaderboard + i)->ime, (leaderboard + i)->score);
-		}
-		else {
-			printf("Player ID: %d\tIme: %s\tScore: %d\tDouble or nothing: no\n", (leaderboard + i)->id, (leaderboard + i)->ime, (leaderboard + i)->score);
-		}
-	}*/
 	free(sortBuffer);
+	free(noRepeat);
 }
 void* pronadiSave(PLAYER* const leaderboard) {
 	if (leaderboard == NULL) {

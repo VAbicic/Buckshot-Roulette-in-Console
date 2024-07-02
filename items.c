@@ -4,7 +4,7 @@ int inventory(char user) {
 	char move;
 	int indeks = 0;
 	int odabir;
-	int itemCode;
+	int itemCode=0;
 	int dealerUsedItem = 0;
 	int amount = dItemCount;
 	int unavailable;
@@ -297,7 +297,7 @@ int functionSelect(int itemCode, char user) {
 					_getch();
 					pilica();
 					dealerUsedItem = 1;
-					return dealerUsedItem;
+					//return dealerUsedItem;
 				}
 			}
 			else if (doubleDamage != 1) {
@@ -310,8 +310,9 @@ int functionSelect(int itemCode, char user) {
 				pilica();
 				_getch();
 				dealerUsedItem = 1;
-				return dealerUsedItem;
+				//return dealerUsedItem;
 			}
+			return dealerUsedItem;
 		}
 	}
 	else if (itemCode == 5)

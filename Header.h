@@ -55,7 +55,7 @@ void showItems(char user);
 void newGame();
 //leaderboard
 void kreirajDatoteku();
-void saveResults();
+void saveResults(const PLAYER* leaderboard);
 void* readResults();
 void ispisiLeaderboard(const PLAYER* const);
 void* pronadiSave(PLAYER* const);
